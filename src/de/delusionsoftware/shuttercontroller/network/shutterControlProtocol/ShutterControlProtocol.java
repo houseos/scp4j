@@ -11,6 +11,7 @@ package de.delusionsoftware.shuttercontroller.network.shutterControlProtocol;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import de.delusionsoftware.shuttercontroller.device.Device;
 
@@ -20,7 +21,7 @@ public class ShutterControlProtocol {
 
 	public Device getResponse() {
 		try {
-			return responses.take();
+			return responses.poll(2000, TimeUnit.MILLISECONDS);
 		} catch (final InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -29,6 +30,7 @@ public class ShutterControlProtocol {
 
 	public void sendDiscoverHello(final String ipAddress) {
 		final Device dev = Device.sendDiscoverHello(ipAddress);
+		System.err.flush();
 		if (dev != null) {
 			responses.offer(dev);
 		}
