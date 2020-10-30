@@ -121,8 +121,8 @@ public final class ScpCrypto {
     }
 
     String generatePassword() {
-        int passwordLengthInBytes = 32;
-        int randomValueUpperBound = 256;
+        final int passwordLengthInBytes = 32;
+        final int randomValueUpperBound = 256;
         int[] values = new int[passwordLengthInBytes];
         for (int i = 0; i < passwordLengthInBytes; i++) {
             values[i] = RANDOM.nextInt(randomValueUpperBound);

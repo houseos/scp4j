@@ -23,7 +23,7 @@ import picocli.CommandLine.Option;
             UpdateCommand.class
         }
 )
-public class ScpClient implements Runnable {
+public final class ScpClient implements Runnable {
 
     @Option(names = {"-h", "--help"}, description = "Print this usage information.", usageHelp = true)
     boolean usageHelpRequested;

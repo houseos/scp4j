@@ -165,10 +165,13 @@
     <module name="EqualsHashCode"/>
     <module name="HiddenField">
       <property name="ignoreConstructorParameter" value="true"/>
+      <property name="ignoreSetter" value="true"/>
     </module>
     <module name="IllegalInstantiation"/>
     <module name="InnerAssignment"/>
-    <module name="MagicNumber"/>
+    <module name="MagicNumber">
+      <property name="ignoreNumbers" value="-1, 0, 1, 2, 3"/>
+    </module>
     <module name="MissingSwitchDefault"/>
     <module name="MultipleVariableDeclarations"/>
     <module name="SimplifyBooleanExpression"/>

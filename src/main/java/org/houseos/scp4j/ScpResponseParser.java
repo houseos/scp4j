@@ -273,7 +273,7 @@ class WrappedScpResponse {
     String hmac;
 }
 
-final public class ScpResponseParser {
+public final class ScpResponseParser {
 
     private ScpResponseParser() {
         // this class has only static methods
