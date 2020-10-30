@@ -56,7 +56,8 @@ public final class IPRange {
         long[] octets = new long[AMOUNT_OF_OCTETS];
 
         // Determine host bits
-        long hostbits = 32 - netmask;
+        final long maximalNetmask = 32;
+        long hostbits = maximalNetmask - netmask;
         // Set all host bits to 1
         long invertor = 0;
         for (long i = 0; i < hostbits; i++) {
