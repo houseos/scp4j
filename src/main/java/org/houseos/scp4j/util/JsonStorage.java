@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.houseos.scp4j.ScpDevice;
 
-public class JsonStorage {
+public final class JsonStorage {
 
     private JsonStorage() {
         //private constructor, because this is a utility class
@@ -35,7 +35,7 @@ public class JsonStorage {
             }.getType();
             List<ScpDevice> devices = new Gson().fromJson(json, listType);
             //add to List, remove if it already exists to mitigate duplicates
-            devices.removeIf(element -> element.deviceId.equals(device.deviceId));
+            devices.removeIf(element -> element.getDeviceId().equals(device.getDeviceId()));
             devices.add(device);
             System.out.println(devices);
             //write the file and list to JSON

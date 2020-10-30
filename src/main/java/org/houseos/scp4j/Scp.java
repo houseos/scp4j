@@ -83,11 +83,11 @@ public final class Scp {
                         newDevices.add(dev);
                     } else {
                         System.out.println("default password not set.");
-                        if (knownDevices.stream().filter(element -> element.deviceId.equals(dev.deviceId)).findAny()
-                                .isPresent()) {
+                        if (knownDevices.stream().filter(element -> element.getDeviceId().equals(dev.getDeviceId()))
+                                .findAny().isPresent()) {
                             System.out.println("Device ${dev.deviceId} already known.");
                         } else {
-                            System.out.println("Device " + dev.deviceId + " not known, adding to known devices.");
+                            System.out.println("Device " + dev.getDeviceId() + " not known, adding to known devices.");
                             knownDevices.add(dev);
                         }
                     }
@@ -127,7 +127,7 @@ public final class Scp {
                         = ScpResponseParser.parseDiscoverResponse(response.getValue(), knownDevices);
                 if (parsedResponse != null) {
                     ScpDevice scpDevice = knownDevices.stream().filter(element
-                            -> element.deviceId.equals(parsedResponse.deviceId)).findFirst().orElse(null);
+                            -> element.getDeviceId().equals(parsedResponse.deviceId)).findFirst().orElse(null);
                     if (scpDevice != null) {
                         scpDevice.ipAddress = response.getKey();
                         JsonStorage.storeDevice(scpDevice, jsonPath);
@@ -183,11 +183,11 @@ public final class Scp {
                         newDevices.add(dev);
                     } else {
                         System.out.println("default password not set.");
-                        if (knownDevices.stream().filter(element -> element.deviceId.equals(dev.deviceId)).findAny()
-                                .isPresent()) {
-                            System.out.println("Device " + dev.deviceId + " already known.");
+                        if (knownDevices.stream().filter(element -> element.getDeviceId().equals(dev.getDeviceId()))
+                                .findAny().isPresent()) {
+                            System.out.println("Device " + dev.getDeviceId() + " already known.");
                         } else {
-                            System.out.println("Device " + dev.deviceId + " not known, adding to known devices.");
+                            System.out.println("Device " + dev.getDeviceId() + " not known, adding to known devices.");
                             knownDevices.add(dev);
                         }
                     }
@@ -207,7 +207,7 @@ public final class Scp {
         }
 
         // for each new device
-        System.out.println("Provisioning device: " + device.deviceId);
+        System.out.println("Provisioning device: " + device.getDeviceId());
         // send security-pw-change
         ScpMessageSender.sendNewPassword(device);
 
@@ -227,7 +227,7 @@ public final class Scp {
             System.out.println("Restarting device successfull, removing from new devices and adding to known devices.");
             this.knownDevices.add(device);
             //add to List, remove if it already exists to mitigate duplicates
-            this.newDevices.removeIf(element -> element.deviceId.equals(device.deviceId));
+            this.newDevices.removeIf(element -> element.getDeviceId().equals(device.getDeviceId()));
             //print all device info
             System.out.println(device.toString());
             JsonStorage.storeDevice(device, jsonPath);
@@ -236,8 +236,8 @@ public final class Scp {
 
     void control(String deviceId, String command) {
         System.out.println("do control for device: " + deviceId);
-        ScpDevice scpDevice = knownDevices.stream().filter(element -> element.deviceId.equals(deviceId)).findFirst()
-                .orElse(null);
+        ScpDevice scpDevice = knownDevices.stream().filter(element -> element.getDeviceId().equals(deviceId))
+                .findFirst().orElse(null);
         if (scpDevice != null) {
             String controlResponse = ScpMessageSender.sendControl(scpDevice, command);
             System.out.println(controlResponse);
@@ -251,8 +251,8 @@ public final class Scp {
 
     void resetToDefault(String deviceId) {
         System.out.println("do control for device: " + deviceId);
-        ScpDevice scpDevice = knownDevices.stream().filter(element -> element.deviceId.equals(deviceId)).findFirst()
-                .orElse(null);
+        ScpDevice scpDevice = knownDevices.stream().filter(element -> element.getDeviceId().equals(deviceId))
+                .findFirst().orElse(null);
         if (scpDevice != null) {
             String resetToDefaultResponse = ScpMessageSender.sendResetToDefault(scpDevice);
             System.out.println(resetToDefaultResponse);

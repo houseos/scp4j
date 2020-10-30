@@ -18,7 +18,7 @@ class ScpResponseDiscover {
     int currentPasswordNumber;
     String hmac;
 
-    ScpResponseDiscover(String deviceId, String deviceType, int currentPasswordNumber,
+    private ScpResponseDiscover(String deviceId, String deviceType, int currentPasswordNumber,
             final String hmac) {
         this.deviceId = deviceId;
         this.deviceType = deviceType;
@@ -33,8 +33,8 @@ class ScpResponseDiscover {
 
         String password = null;
         if (devices != null) {
-            ScpDevice scpDevice = devices.stream().filter(element -> element.deviceId.equals(discoverResponse.deviceId))
-                    .findFirst().orElse(null);
+            ScpDevice scpDevice = devices.stream().filter(element -> element.getDeviceId()
+                    .equals(discoverResponse.deviceId)).findFirst().orElse(null);
             if (scpDevice != null) {
                 password = scpDevice.knownPassword;
             }

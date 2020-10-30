@@ -15,7 +15,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-public class ScpMessageSender {
+public final class ScpMessageSender {
 
     static final int PORT = 19316;
     static final int HTTP_OK = 200;
@@ -32,7 +32,7 @@ public class ScpMessageSender {
     static String fetchNVCN(ScpDevice device) {
         //plain text = <salt> + ":" + "security-fetch-nvcn" + ":" + <device ID>
         String salt = new ScpCrypto().generatePassword();
-        String payload = salt + ":security-fetch-nvcn:" + device.deviceId;
+        String payload = salt + ":security-fetch-nvcn:" + device.getDeviceId();
         ScpJson scpJson = new ScpCrypto().encryptThenEncode(device.knownPassword, payload);
 
         String query = "nonce=" + urlEncode(scpJson.encryptedPayload.base64Nonce);
@@ -61,7 +61,7 @@ public class ScpMessageSender {
 
         String salt = new ScpCrypto().generatePassword();
         String payload
-                = salt + ":security-pw-change:" + device.deviceId + ":" + nvcn + ":" + password;
+                = salt + ":security-pw-change:" + device.getDeviceId() + ":" + nvcn + ":" + password;
         ScpJson scpJson
                 = new ScpCrypto().encryptThenEncode(device.knownPassword, payload);
 
@@ -114,7 +114,7 @@ public class ScpMessageSender {
         // + <NVCN> + ":" + <ssid> + ":" + <pre-shared-key>
         String salt = new ScpCrypto().generatePassword();
         String payload
-                = salt + ":security-wifi-config:" + device.deviceId + ":" + nvcn + ":" + ssid + ":" + preSharedKey;
+                = salt + ":security-wifi-config:" + device.getDeviceId() + ":" + nvcn + ":" + ssid + ":" + preSharedKey;
         ScpJson scpJson
                 = new ScpCrypto().encryptThenEncode(device.knownPassword, payload);
 
@@ -163,7 +163,7 @@ public class ScpMessageSender {
         //send new wifi credentials
         // <salt> + ":" + "security-wifi-config" + ":" + <device ID> + ":" + <NVCN>
         String salt = new ScpCrypto().generatePassword();
-        String payload = salt + ":security-restart:" + device.deviceId + ":" + nvcn;
+        String payload = salt + ":security-restart:" + device.getDeviceId() + ":" + nvcn;
         ScpJson scpJson
                 = new ScpCrypto().encryptThenEncode(device.knownPassword, payload);
 
@@ -212,7 +212,7 @@ public class ScpMessageSender {
         //send control command
         // <salt> + ":" + "security-reset-to-default" + ":" + <device ID> + ":" + <NVCN>
         String salt = new ScpCrypto().generatePassword();
-        String payload = salt + ":security-reset-to-default:" + device.deviceId + ":" + nvcn;
+        String payload = salt + ":security-reset-to-default:" + device.getDeviceId() + ":" + nvcn;
         ScpJson scpJson
                 = new ScpCrypto().encryptThenEncode(device.knownPassword, payload);
 
@@ -260,7 +260,7 @@ public class ScpMessageSender {
         //send control command
         // <salt> + ":" + "control" + ":" + <device ID> + ":" + <NVCN> + ":" + action
         String salt = new ScpCrypto().generatePassword();
-        String payload = salt + ":control:" + device.deviceId + ":" + nvcn + ":" + action;
+        String payload = salt + ":control:" + device.getDeviceId() + ":" + nvcn + ":" + action;
         ScpJson scpJson = new ScpCrypto().encryptThenEncode(device.knownPassword, payload);
 
         String query = "nonce=" + urlEncode(scpJson.encryptedPayload.base64Nonce);

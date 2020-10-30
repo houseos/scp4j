@@ -6,7 +6,11 @@
  */
 package org.houseos.scp4j;
 
-public class ScpStatus {
+public final class ScpStatus {
+
+    private ScpStatus() {
+        // this class has no accessible methods
+    }
 
     static final String RESULT_DONE = "done";
     static final String RESULT_SUCCESS = "success";

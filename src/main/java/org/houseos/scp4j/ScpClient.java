@@ -78,13 +78,15 @@ class ProvisionCommand implements Runnable {
     @Option(names = {"-m", "--mask"}, required = true, description = "The subnet mask of the network to scan.")
     private String mask;
 
-    @Option(names = {"-s", "--ssid"}, required = true, description = "The SSID of the Wifi the device should connect to.")
+    @Option(names = {"-s", "--ssid"}, required = true,
+            description = "The SSID of the Wifi the device should connect to.")
     private String ssid;
 
     @Option(names = {"-p", "--password"}, required = true, description = "The Wifi password.")
     private String password;
 
-    @Option(names = {"-j", "--json"}, required = true, description = "Export the provisioned devices to the given JSON file to be able to load them for the next command.")
+    @Option(names = {"-j", "--json"}, required = true, description = "Export the provisioned devices to the given "
+            + "JSON file to be able to load them for the next command.")
     private String jsonPath;
 
     @Override
@@ -108,7 +110,8 @@ class ResetCommand implements Runnable {
     @Option(names = {"-d", "--deviceId"}, required = true, description = "The ID of the device to control.")
     private String deviceId;
 
-    @Option(names = {"-j", "--json"}, required = true, description = "Path to the JSON file containing all known devices.")
+    @Option(names = {"-j", "--json"}, required = true,
+            description = "Path to the JSON file containing all known devices.")
     private String jsonPath;
 
     @Override
@@ -141,7 +144,8 @@ class ControlCommand implements Runnable {
     @Option(names = {"-d", "--deviceId"}, required = true, description = "The ID of the device to control.")
     private String deviceId;
 
-    @Option(names = {"-j", "--json"}, required = true, description = "Path to the JSON file containing all known devices.")
+    @Option(names = {"-j", "--json"}, required = true,
+            description = "Path to the JSON file containing all known devices.")
     private String jsonPath;
 
     @Override
@@ -174,7 +178,8 @@ class UpdateCommand implements Runnable {
     @Option(names = {"-m", "--mask"}, required = true, description = "The subnet mask of the network to scan.")
     private String mask;
 
-    @Option(names = {"-j", "--json"}, required = true, description = "Path to the JSON file containing all known devices.")
+    @Option(names = {"-j", "--json"}, required = true,
+            description = "Path to the JSON file containing all known devices.")
     private String jsonPath;
 
     @Override

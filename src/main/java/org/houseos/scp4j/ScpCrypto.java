@@ -121,30 +121,30 @@ public final class ScpCrypto {
     }
 
     String generatePassword() {
-        final int PASSWORD_LENGTH_IN_BYTES = 32;
-        final int RANDOM_VALUE_UPPER_BOUND = 256;
-        int[] values = new int[PASSWORD_LENGTH_IN_BYTES];
-        for (int i = 0; i < PASSWORD_LENGTH_IN_BYTES; i++) {
-            values[i] = RANDOM.nextInt(RANDOM_VALUE_UPPER_BOUND);
+        int passwordLengthInBytes = 32;
+        int randomValueUpperBound = 256;
+        int[] values = new int[passwordLengthInBytes];
+        for (int i = 0; i < passwordLengthInBytes; i++) {
+            values[i] = RANDOM.nextInt(randomValueUpperBound);
         }
         byte[] bytes = new byte[values.length];
         for (int i = 0; i < values.length; i++) {
             bytes[i] = (byte) values[i];
         }
-        return Base64.getUrlEncoder().encodeToString(bytes).substring(0, PASSWORD_LENGTH_IN_BYTES);
+        return Base64.getUrlEncoder().encodeToString(bytes).substring(0, passwordLengthInBytes);
     }
 
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
     public static String bytesToHex(byte[] bytes) {
-        final int MASK_LOWEST_EIGHT_BITS_ONE = 0xFF;
-        final int SHIFT_FOUR = 4;
-        final int MASK_LOWEST_FOUR_BITS_ONE = 0x0f;
+        int maskLowestEightBitsOne = 0xFF;
+        int shiftFourBits = 4;
+        int maskLowestFourBitsOne = 0x0f;
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & MASK_LOWEST_EIGHT_BITS_ONE;
-            hexChars[j * 2] = HEX_ARRAY[v >>> SHIFT_FOUR];
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & MASK_LOWEST_FOUR_BITS_ONE];
+            int v = bytes[j] & maskLowestEightBitsOne;
+            hexChars[j * 2] = HEX_ARRAY[v >>> shiftFourBits];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & maskLowestFourBitsOne];
         }
         return new String(hexChars);
     }

@@ -11,6 +11,11 @@ import java.util.List;
 
 public final class IPRange {
 
+    private static final int BITMASK_ONE_BYTE = 255;
+    private static final int SHIFT_3_BYTES = 24; // 3 * 8
+    private static final int SHIFT_2_BYTES = 16; // 2 * 8
+    private static final int SHIFT_1_BYTE = 8;   // 1 * 8
+
     private IPRange() {
         //private constructor, because this is a utility class
     }
@@ -26,19 +31,19 @@ public final class IPRange {
 
     private static long octetsToInteger(long[] octets) {
         long address = 0;
-        address += (octets[0] << 24);
-        address += (octets[1] << 16);
-        address += (octets[2] << 8);
+        address += (octets[0] << SHIFT_3_BYTES);
+        address += (octets[1] << SHIFT_2_BYTES);
+        address += (octets[2] << SHIFT_1_BYTE);
         address += (octets[3]);
         return address;
     }
 
-    private static long[] longegerToOctets(long address) {
+    private static long[] integerToOctets(long address) {
         long[] octets = new long[4];
-        octets[0] = (address & (255 << 24)) >> 24;
-        octets[1] = (address & (255 << 16)) >> 16;
-        octets[2] = (address & (255 << 8)) >> 8;
-        octets[3] = (address & (255));
+        octets[0] = (address & (BITMASK_ONE_BYTE << SHIFT_3_BYTES)) >> SHIFT_3_BYTES;
+        octets[1] = (address & (BITMASK_ONE_BYTE << SHIFT_2_BYTES)) >> SHIFT_2_BYTES;
+        octets[2] = (address & (BITMASK_ONE_BYTE << SHIFT_1_BYTE)) >> SHIFT_1_BYTE;
+        octets[3] = (address & (BITMASK_ONE_BYTE));
         return octets;
     }
 
@@ -60,10 +65,10 @@ public final class IPRange {
         //substract 1 to get last address instead of broadcast address
         lastAddress--;
 
-        octets[0] = (lastAddress & (255 << 24)) >> 24;
-        octets[1] = (lastAddress & (255 << 16)) >> 16;
-        octets[2] = (lastAddress & (255 << 8)) >> 8;
-        octets[3] = lastAddress & (255);
+        octets[0] = (lastAddress & (BITMASK_ONE_BYTE << SHIFT_3_BYTES)) >> SHIFT_3_BYTES;
+        octets[1] = (lastAddress & (BITMASK_ONE_BYTE << SHIFT_2_BYTES)) >> SHIFT_2_BYTES;
+        octets[2] = (lastAddress & (BITMASK_ONE_BYTE << SHIFT_1_BYTE)) >> SHIFT_1_BYTE;
+        octets[3] = lastAddress & (BITMASK_ONE_BYTE);
         return octets;
     }
 
@@ -77,10 +82,10 @@ public final class IPRange {
         }
         long lastAddress = address & invertor;
 
-        octets[0] = (lastAddress & (255 << 24)) >> 24;
-        octets[1] = (lastAddress & (255 << 16)) >> 16;
-        octets[2] = (lastAddress & (255 << 8)) >> 8;
-        octets[3] = lastAddress & (255);
+        octets[0] = (lastAddress & (BITMASK_ONE_BYTE << SHIFT_3_BYTES)) >> SHIFT_3_BYTES;
+        octets[1] = (lastAddress & (BITMASK_ONE_BYTE << SHIFT_2_BYTES)) >> SHIFT_2_BYTES;
+        octets[2] = (lastAddress & (BITMASK_ONE_BYTE << SHIFT_1_BYTE)) >> SHIFT_1_BYTE;
+        octets[3] = lastAddress & (BITMASK_ONE_BYTE);
         return octets;
     }
 
@@ -95,7 +100,7 @@ public final class IPRange {
         //increment address using long value
         while (currentAddress < octetsToInteger(calculateLastIpAddress(address, netmask))) {
             currentAddress++;
-            ipAddresses.add(octetsToString(longegerToOctets(currentAddress)));
+            ipAddresses.add(octetsToString(integerToOctets(currentAddress)));
         }
         // generate the string representation and store it in list
         return ipAddresses;

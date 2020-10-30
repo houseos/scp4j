@@ -15,7 +15,7 @@ import java.util.List;
 public final class ScpDevice {
 
     String deviceType;
-    public String deviceId;
+    private String deviceId;
     List<ScpDeviceAction> actions;
 
     String ipAddress;
@@ -44,6 +44,14 @@ public final class ScpDevice {
         }
     }
 
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
     static List<ScpDevice> devicesfromJson(String json) {
         Gson g = new Gson();
         Type listType = new TypeToken<ArrayList<ScpDevice>>() {
@@ -54,15 +62,19 @@ public final class ScpDevice {
 
     @Override
     public String toString() {
-        return "ScpDevice:\n Type: " + deviceType + "\n ID: " + deviceId + "\n IP: " + ipAddress + "\n default password: " + isDefaultPasswordSet + "\n password: " + knownPassword + "\n current password number: " + currentPasswordNumber;
+        return "ScpDevice:\n Type: " + deviceType + "\n ID: " + deviceId + "\n IP: " + ipAddress
+                + "\n default password: " + isDefaultPasswordSet + "\n password: " + knownPassword
+                + "\n current password number: " + currentPasswordNumber;
     }
 
     public String toJson() {
-        return "{\"deviceType\":\"" + deviceType + "\",\"deviceId\":\"" + deviceId + "\",\"ipAddress\":\"" + ipAddress + "\",\"isDefaultPasswordSet\":\"" + isDefaultPasswordSet + "\",\"knownPassword\":\"" + knownPassword + "\",\"currentPasswordNumber\":\"" + currentPasswordNumber + "\"}";
+        return "{\"deviceType\":\"" + deviceType + "\",\"deviceId\":\"" + deviceId + "\",\"ipAddress\":\""
+                + ipAddress + "\",\"isDefaultPasswordSet\":\"" + isDefaultPasswordSet + "\",\"knownPassword\":\""
+                + knownPassword + "\",\"currentPasswordNumber\":\"" + currentPasswordNumber + "\"}";
     }
 }
 
-class ScpDeviceTypes {
+final class ScpDeviceTypes {
 
     private ScpDeviceTypes() {
         // this class has no accessible methods
