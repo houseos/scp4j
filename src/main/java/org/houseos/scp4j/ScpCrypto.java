@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: GPL-3.0-only
  * Copyright (C) 2020 Marcel Jaehn
  */
-
 package org.houseos.scp4j;
 
 import java.nio.ByteBuffer;
@@ -27,22 +26,22 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-public class ScpCrypto {
-    
-    static final SecureRandom random = new SecureRandom();
-    
-    private static final String defaultPassword = "01234567890123456789012345678901";
+public final class ScpCrypto {
+
+    private static final SecureRandom RANDOM = new SecureRandom();
+
+    private static final String DEFAULT_PASSWORD = "01234567890123456789012345678901";
 
     private static final String HMAC_SHA512 = "HmacSHA512";
     private static final String ENCRYPT_ALGO = "ChaCha20-Poly1305/None/NoPadding";
-    //private static final int NONCE_LEN = 12; // 96 bits, 12 bytes
+    private static final int NONCE_LEN = 12; // 96 bits, 12 bytes
     private static final int MAC_LEN = 16; // 128 bits, 16 bytes
 
     ScpJson encryptThenEncode(String key, String message) {
         EncryptedPayload encryptedPayload = encryptMessage(key, message);
         return new ScpJson(Base64.getEncoder().encodeToString(key.getBytes(StandardCharsets.UTF_8)), encryptedPayload);
     }
-    
+
     EncryptedPayload encryptMessage(String key, String plainText) {
         Security.addProvider(new BouncyCastleProvider());
         try {
@@ -52,11 +51,11 @@ public class ScpCrypto {
             //Encode encrypted text
             byte[] clearText = plainText.getBytes(StandardCharsets.UTF_8);
             // Encrypt
-            byte[] nonce = new byte[12];
-            random.nextBytes(nonce);
-            
+            byte[] nonce = new byte[NONCE_LEN];
+            RANDOM.nextBytes(nonce);
+
             Cipher cipher = Cipher.getInstance(ENCRYPT_ALGO);
-            
+
             // IV, initialization value with nonce
             IvParameterSpec iv = new IvParameterSpec(nonce);
 
@@ -67,24 +66,23 @@ public class ScpCrypto {
             ByteBuffer bb = ByteBuffer.wrap(encryptedText);
 
             // This encryptedText contains chacha20 ciphertext + poly1305 MAC
-
             // ChaCha20 encrypted the plaintext into a ciphertext of equal length.
             byte[] originalCText = new byte[clearText.length];
             byte[] mac = new byte[MAC_LEN]; // 16 bytes , 128 bits
-            
+
             bb.get(originalCText);
             bb.get(mac);
-            
+
             String base64Data = base64Encode(originalCText);
             String base64Mac = base64Encode(mac);
-            
+
             return new EncryptedPayload(
                     base64Data,
                     clearText.length,
                     base64Mac,
                     base64Encode(encryptedText),
                     base64Encode(nonce)
-                    );
+            );
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(ScpCrypto.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NoSuchPaddingException ex) {
@@ -100,15 +98,15 @@ public class ScpCrypto {
         }
         return null;
     }
-    
+
     boolean verifyHMAC(String content, String hmac, String password) {
         String secretKey;
-        if(password == null){
-            secretKey = defaultPassword;
+        if (password == null) {
+            secretKey = DEFAULT_PASSWORD;
         } else {
             secretKey = password;
         }
-        
+
         try {
             final byte[] byteKey = secretKey.getBytes(StandardCharsets.UTF_8);
             Mac sha512Hmac = Mac.getInstance(HMAC_SHA512);
@@ -123,41 +121,49 @@ public class ScpCrypto {
     }
 
     String generatePassword() {
-        int[] values = new int[32];
-        for (int i = 0; i<32; i++) {
-            values[i] = random.nextInt(256);
+        final int PASSWORD_LENGTH_IN_BYTES = 32;
+        final int RANDOM_VALUE_UPPER_BOUND = 256;
+        int[] values = new int[PASSWORD_LENGTH_IN_BYTES];
+        for (int i = 0; i < PASSWORD_LENGTH_IN_BYTES; i++) {
+            values[i] = RANDOM.nextInt(RANDOM_VALUE_UPPER_BOUND);
         }
         byte[] bytes = new byte[values.length];
         for (int i = 0; i < values.length; i++) {
-            bytes[i] = (byte)values[i];
+            bytes[i] = (byte) values[i];
         }
-        return Base64.getUrlEncoder().encodeToString(bytes).substring(0,32);
+        return Base64.getUrlEncoder().encodeToString(bytes).substring(0, PASSWORD_LENGTH_IN_BYTES);
     }
 
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+
     public static String bytesToHex(byte[] bytes) {
+        final int MASK_LOWEST_EIGHT_BITS_ONE = 0xFF;
+        final int SHIFT_FOUR = 4;
+        final int MASK_LOWEST_FOUR_BITS_ONE = 0x0f;
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+            int v = bytes[j] & MASK_LOWEST_EIGHT_BITS_ONE;
+            hexChars[j * 2] = HEX_ARRAY[v >>> SHIFT_FOUR];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & MASK_LOWEST_FOUR_BITS_ONE];
         }
         return new String(hexChars);
     }
-    
+
     private static String base64Encode(byte[] bytes) {
         return Base64.getEncoder().encodeToString(bytes);
     }
 }
 
 class EncryptedPayload {
+
     String base64DataWithMac;
     String base64Data;
     int dataLength;
     String base64Mac;
     String base64Nonce;
 
-    EncryptedPayload(String base64Data, int dataLength, String base64Mac, String base64DataWithMac, String base64Nonce) {
+    EncryptedPayload(String base64Data, int dataLength, String base64Mac, String base64DataWithMac,
+            String base64Nonce) {
         this.base64DataWithMac = base64DataWithMac;
         this.base64Data = base64Data;
         this.dataLength = dataLength;
@@ -167,6 +173,7 @@ class EncryptedPayload {
 }
 
 class ScpJson {
+
     String key;
     EncryptedPayload encryptedPayload;
 

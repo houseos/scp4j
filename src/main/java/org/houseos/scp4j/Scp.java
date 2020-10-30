@@ -6,8 +6,6 @@
  */
 package org.houseos.scp4j;
 
-import org.houseos.scp4j.util.JsonStorage;
-import org.houseos.scp4j.util.IPRange;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +14,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import org.houseos.scp4j.util.IPRange;
+import org.houseos.scp4j.util.JsonStorage;
 
-public class Scp {
+public final class Scp {
 
     private static Scp instance;
 
@@ -46,8 +46,7 @@ public class Scp {
     void doDiscover(String subnet, String mask) {
         newDevices = new ArrayList<>();
         // Get a list with all relevant IP addresses
-        IPRange range = new IPRange(subnet, Integer.parseInt(mask));
-        List<String> allIPs = range.getAllIpAddressesInRange();
+        List<String> allIPs = IPRange.getAllIpAddressesInRange(subnet, Integer.parseInt(mask));
 
         final BlockingQueue<SimpleEntry<String, String>> responses = new LinkedBlockingQueue<>();
         final ExecutorService requesterThreadPool = Executors.newFixedThreadPool(100);
@@ -84,7 +83,8 @@ public class Scp {
                         newDevices.add(dev);
                     } else {
                         System.out.println("default password not set.");
-                        if (knownDevices.stream().filter(element -> element.deviceId.equals(dev.deviceId)).findAny().isPresent()) {
+                        if (knownDevices.stream().filter(element -> element.deviceId.equals(dev.deviceId)).findAny()
+                                .isPresent()) {
                             System.out.println("Device ${dev.deviceId} already known.");
                         } else {
                             System.out.println("Device " + dev.deviceId + " not known, adding to known devices.");
@@ -101,8 +101,7 @@ public class Scp {
     void doUpdate(String subnet, String mask, String jsonPath) {
         newDevices = new ArrayList<>();
         // Get a list with all relevant IP addresses
-        IPRange range = new IPRange(subnet, Integer.parseInt(mask));
-        List<String> allIPs = range.getAllIpAddressesInRange();
+        List<String> allIPs = IPRange.getAllIpAddressesInRange(subnet, Integer.parseInt(mask));
 
         final BlockingQueue<SimpleEntry<String, String>> responses = new LinkedBlockingQueue<>();
         final ExecutorService requesterThreadPool = Executors.newFixedThreadPool(100);
@@ -127,7 +126,8 @@ public class Scp {
                 ScpResponseDiscover parsedResponse
                         = ScpResponseParser.parseDiscoverResponse(response.getValue(), knownDevices);
                 if (parsedResponse != null) {
-                    ScpDevice scpDevice = knownDevices.stream().filter(element -> element.deviceId.equals(parsedResponse.deviceId)).findFirst().orElse(null);
+                    ScpDevice scpDevice = knownDevices.stream().filter(element
+                            -> element.deviceId.equals(parsedResponse.deviceId)).findFirst().orElse(null);
                     if (scpDevice != null) {
                         scpDevice.ipAddress = response.getKey();
                         JsonStorage.storeDevice(scpDevice, jsonPath);
@@ -138,11 +138,11 @@ public class Scp {
         }
     }
 
-    void doDiscoverThenDoProvisioning(String subnet, String mask, String ssid, String wifiPassword, String jsonPath) {
+    void doDiscoverThenDoProvisioning(String subnet, String mask, String ssid, String wifiPassword,
+            String jsonPath) {
         newDevices = new ArrayList<>();
         // Get a list with all relevant IP addresses
-        IPRange range = new IPRange(subnet, Integer.parseInt(mask));
-        List<String> allIPs = range.getAllIpAddressesInRange();
+        List<String> allIPs = IPRange.getAllIpAddressesInRange(subnet, Integer.parseInt(mask));
 
         final BlockingQueue<SimpleEntry<String, String>> responses = new LinkedBlockingQueue<>();
         final ExecutorService requesterThreadPool = Executors.newFixedThreadPool(100);
@@ -183,7 +183,8 @@ public class Scp {
                         newDevices.add(dev);
                     } else {
                         System.out.println("default password not set.");
-                        if (knownDevices.stream().filter(element -> element.deviceId.equals(dev.deviceId)).findAny().isPresent()) {
+                        if (knownDevices.stream().filter(element -> element.deviceId.equals(dev.deviceId)).findAny()
+                                .isPresent()) {
                             System.out.println("Device " + dev.deviceId + " already known.");
                         } else {
                             System.out.println("Device " + dev.deviceId + " not known, adding to known devices.");
@@ -235,7 +236,8 @@ public class Scp {
 
     void control(String deviceId, String command) {
         System.out.println("do control for device: " + deviceId);
-        ScpDevice scpDevice = knownDevices.stream().filter(element -> element.deviceId.equals(deviceId)).findFirst().orElse(null);
+        ScpDevice scpDevice = knownDevices.stream().filter(element -> element.deviceId.equals(deviceId)).findFirst()
+                .orElse(null);
         if (scpDevice != null) {
             String controlResponse = ScpMessageSender.sendControl(scpDevice, command);
             System.out.println(controlResponse);
@@ -249,7 +251,8 @@ public class Scp {
 
     void resetToDefault(String deviceId) {
         System.out.println("do control for device: " + deviceId);
-        ScpDevice scpDevice = knownDevices.stream().filter(element -> element.deviceId.equals(deviceId)).findFirst().orElse(null);
+        ScpDevice scpDevice = knownDevices.stream().filter(element -> element.deviceId.equals(deviceId)).findFirst()
+                .orElse(null);
         if (scpDevice != null) {
             String resetToDefaultResponse = ScpMessageSender.sendResetToDefault(scpDevice);
             System.out.println(resetToDefaultResponse);
