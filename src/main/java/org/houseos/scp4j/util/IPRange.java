@@ -11,6 +11,7 @@ import java.util.List;
 
 public final class IPRange {
 
+    private static final int AMOUNT_OF_OCTETS = 4;
     private static final int BITMASK_ONE_BYTE = 255;
     private static final int SHIFT_3_BYTES = 24; // 3 * 8
     private static final int SHIFT_2_BYTES = 16; // 2 * 8
@@ -21,7 +22,7 @@ public final class IPRange {
     }
 
     private static long[] getOctetsOfIpAddress(String ipAddress) {
-        long[] octets = new long[4];
+        long[] octets = new long[AMOUNT_OF_OCTETS];
         String[] splitResult = ipAddress.split("\\.");
         for (int i = 0; i < splitResult.length; i++) {
             octets[i] = Long.valueOf(splitResult[i]);
@@ -39,7 +40,7 @@ public final class IPRange {
     }
 
     private static long[] integerToOctets(long address) {
-        long[] octets = new long[4];
+        long[] octets = new long[AMOUNT_OF_OCTETS];
         octets[0] = (address & (BITMASK_ONE_BYTE << SHIFT_3_BYTES)) >> SHIFT_3_BYTES;
         octets[1] = (address & (BITMASK_ONE_BYTE << SHIFT_2_BYTES)) >> SHIFT_2_BYTES;
         octets[2] = (address & (BITMASK_ONE_BYTE << SHIFT_1_BYTE)) >> SHIFT_1_BYTE;
@@ -52,7 +53,7 @@ public final class IPRange {
     }
 
     private static long[] calculateLastIpAddress(long address, long netmask) {
-        long[] octets = new long[4];
+        long[] octets = new long[AMOUNT_OF_OCTETS];
 
         // Determine host bits
         long hostbits = 32 - netmask;
@@ -73,12 +74,13 @@ public final class IPRange {
     }
 
     private static long[] calculateNetworkAddress(long address, long netmask) {
-        long[] octets = new long[4];
+        long[] octets = new long[AMOUNT_OF_OCTETS];
 
         // Get only the network bits set to 1
         long invertor = 0;
+        final int maximalExponent = 31;
         for (long i = 0; i < netmask; i++) {
-            invertor += Math.pow(2, 31 - i);
+            invertor += Math.pow(2, maximalExponent - i);
         }
         long lastAddress = address & invertor;
 

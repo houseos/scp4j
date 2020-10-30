@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import java.util.Base64;
 import java.util.List;
 
-class ScpResponseDiscover {
+final class ScpResponseDiscover {
 
     static final String TYPE = "discover-response";
     String deviceId;
@@ -51,13 +51,13 @@ class ScpResponseDiscover {
     }
 }
 
-class ScpResponseFetchNvcn {
+final class ScpResponseFetchNvcn {
 
     static final String TYPE = "security-fetch-nvcn";
     String deviceId;
     String nvcn;
 
-    ScpResponseFetchNvcn(String deviceId, String nvcn) {
+    private ScpResponseFetchNvcn(String deviceId, String nvcn) {
         this.deviceId = deviceId;
         this.nvcn = nvcn;
     }
@@ -77,7 +77,7 @@ class ScpResponseFetchNvcn {
     }
 }
 
-class ScpResponseSetPassword {
+final class ScpResponseSetPassword {
 
     static final String EXPECTED_TYPE = "security-pw-change";
     String type;
@@ -85,7 +85,7 @@ class ScpResponseSetPassword {
     String currentPasswordNumber;
     String result;
 
-    ScpResponseSetPassword(String deviceId, String currentPasswordNumber, String result) {
+    private ScpResponseSetPassword(String deviceId, String currentPasswordNumber, String result) {
         this.deviceId = deviceId;
         this.currentPasswordNumber = currentPasswordNumber;
         this.result = result;
@@ -116,14 +116,14 @@ class ScpResponseSetPassword {
     }
 }
 
-class ScpResponseSetWifiConfig {
+final class ScpResponseSetWifiConfig {
 
     static final String EXPECTED_TYPE = "security-wifi-config";
     String type;
     String deviceId;
     String result;
 
-    ScpResponseSetWifiConfig(String deviceId, String result) {
+    private ScpResponseSetWifiConfig(String deviceId, String result) {
         this.deviceId = deviceId;
         this.result = result;
     }
@@ -153,14 +153,14 @@ class ScpResponseSetWifiConfig {
     }
 }
 
-class ScpResponseRestart {
+final class ScpResponseRestart {
 
     static final String EXPECTED_TYPE = "security-restart";
     String type;
     String deviceId;
     String result;
 
-    ScpResponseRestart(String deviceId, String result) {
+    private ScpResponseRestart(String deviceId, String result) {
         this.deviceId = deviceId;
         this.result = result;
     }
@@ -190,14 +190,14 @@ class ScpResponseRestart {
     }
 }
 
-class ScpResponseResetToDefault {
+final class ScpResponseResetToDefault {
 
     static final String EXPECTED_TYPE = "security-reset-to-default";
     String type;
     String deviceId;
     String result;
 
-    ScpResponseResetToDefault(String deviceId, String result) {
+    private ScpResponseResetToDefault(String deviceId, String result) {
         this.deviceId = deviceId;
         this.result = result;
     }
@@ -227,7 +227,7 @@ class ScpResponseResetToDefault {
     }
 }
 
-class ScpResponseControl {
+final class ScpResponseControl {
 
     static final String EXPECTED_TYPE = "control";
     String type;
@@ -235,7 +235,7 @@ class ScpResponseControl {
     String deviceId;
     String result;
 
-    ScpResponseControl(String action, String deviceId, String result) {
+    private ScpResponseControl(String action, String deviceId, String result) {
         this.action = action;
         this.deviceId = deviceId;
         this.result = result;
@@ -273,7 +273,11 @@ class WrappedScpResponse {
     String hmac;
 }
 
-public class ScpResponseParser {
+final public class ScpResponseParser {
+
+    private ScpResponseParser() {
+        // this class has only static methods
+    }
 
     static ScpResponseDiscover parseDiscoverResponse(String response, List<ScpDevice> devices) {
         return ScpResponseDiscover.fromJson(response, devices);

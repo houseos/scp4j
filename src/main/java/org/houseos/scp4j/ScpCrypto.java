@@ -137,9 +137,9 @@ public final class ScpCrypto {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
     public static String bytesToHex(byte[] bytes) {
-        int maskLowestEightBitsOne = 0xFF;
-        int shiftFourBits = 4;
-        int maskLowestFourBitsOne = 0x0f;
+        final int maskLowestEightBitsOne = 0xFF;
+        final int shiftFourBits = 4;
+        final int maskLowestFourBitsOne = 0x0f;
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
             int v = bytes[j] & maskLowestEightBitsOne;
