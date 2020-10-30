@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: GPL-3.0-only
  * Copyright (C) 2020 Marcel Jaehn
  */
-
 package org.houseos.scp4j;
 
 import org.houseos.scp4j.util.JsonStorage;
@@ -19,6 +18,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class Scp {
+
     private static Scp instance;
 
     // List of configured devices known to SCP
@@ -49,7 +49,7 @@ public class Scp {
         IPRange range = new IPRange(subnet, Integer.parseInt(mask));
         List<String> allIPs = range.getAllIpAddressesInRange();
 
-        final BlockingQueue<SimpleEntry<String,String>> responses = new LinkedBlockingQueue<>();
+        final BlockingQueue<SimpleEntry<String, String>> responses = new LinkedBlockingQueue<>();
         final ExecutorService requesterThreadPool = Executors.newFixedThreadPool(100);
 
         for (String ip : allIPs) {
@@ -66,19 +66,19 @@ public class Scp {
                 // do nothing
             }
         }
-        
-        for (SimpleEntry<String,String> response : responses) {
+
+        for (SimpleEntry<String, String> response : responses) {
             if (response.getValue() != null) {
-                ScpResponseDiscover parsedResponse =
-                        ScpResponseParser.parseDiscoverResponse(response.getValue(), null);
+                ScpResponseDiscover parsedResponse
+                        = ScpResponseParser.parseDiscoverResponse(response.getValue(), null);
                 if (parsedResponse != null) {
                     ScpDevice dev = new ScpDevice(
-                        parsedResponse.deviceId,
-                        parsedResponse.deviceType,
-                        response.getKey(),
-                        (parsedResponse.currentPasswordNumber == 0),
-                        (parsedResponse.currentPasswordNumber == 0 ? "01234567890123456789012345678901" : ""),
-                        parsedResponse.currentPasswordNumber);
+                            parsedResponse.deviceId,
+                            parsedResponse.deviceType,
+                            response.getKey(),
+                            (parsedResponse.currentPasswordNumber == 0),
+                            (parsedResponse.currentPasswordNumber == 0 ? "01234567890123456789012345678901" : ""),
+                            parsedResponse.currentPasswordNumber);
                     if (dev.isDefaultPasswordSet) {
                         System.out.println("default password set, adding to new devices.");
                         newDevices.add(dev);
@@ -104,7 +104,7 @@ public class Scp {
         IPRange range = new IPRange(subnet, Integer.parseInt(mask));
         List<String> allIPs = range.getAllIpAddressesInRange();
 
-        final BlockingQueue<SimpleEntry<String,String>> responses = new LinkedBlockingQueue<>();
+        final BlockingQueue<SimpleEntry<String, String>> responses = new LinkedBlockingQueue<>();
         final ExecutorService requesterThreadPool = Executors.newFixedThreadPool(100);
 
         for (String ip : allIPs) {
@@ -121,11 +121,11 @@ public class Scp {
                 // do nothing
             }
         }
-        
-        for (SimpleEntry<String,String> response : responses) {
+
+        for (SimpleEntry<String, String> response : responses) {
             if (response.getValue() != null) {
-                ScpResponseDiscover parsedResponse =
-                        ScpResponseParser.parseDiscoverResponse(response.getValue(), knownDevices);
+                ScpResponseDiscover parsedResponse
+                        = ScpResponseParser.parseDiscoverResponse(response.getValue(), knownDevices);
                 if (parsedResponse != null) {
                     ScpDevice scpDevice = knownDevices.stream().filter(element -> element.deviceId.equals(parsedResponse.deviceId)).findFirst().orElse(null);
                     if (scpDevice != null) {
@@ -144,7 +144,7 @@ public class Scp {
         IPRange range = new IPRange(subnet, Integer.parseInt(mask));
         List<String> allIPs = range.getAllIpAddressesInRange();
 
-        final BlockingQueue<SimpleEntry<String,String>> responses = new LinkedBlockingQueue<>();
+        final BlockingQueue<SimpleEntry<String, String>> responses = new LinkedBlockingQueue<>();
         final ExecutorService requesterThreadPool = Executors.newFixedThreadPool(100);
 
         for (String ip : allIPs) {
@@ -162,20 +162,20 @@ public class Scp {
             }
         }
 
-        for (SimpleEntry<String,String> response : responses) {
+        for (SimpleEntry<String, String> response : responses) {
             if (response.getValue() != null) {
                 System.out.println("Received discover response.");
-                ScpResponseDiscover parsedResponse =
-                    ScpResponseParser.parseDiscoverResponse(response.getValue(), null);
+                ScpResponseDiscover parsedResponse
+                        = ScpResponseParser.parseDiscoverResponse(response.getValue(), null);
                 if (parsedResponse != null) {
                     // create device
                     ScpDevice dev = new ScpDevice(
-                        parsedResponse.deviceId,
-                        parsedResponse.deviceType,
-                        response.getKey(),
-                        (parsedResponse.currentPasswordNumber == 0),
-                        (parsedResponse.currentPasswordNumber == 0 ? "01234567890123456789012345678901" : ""),
-                        parsedResponse.currentPasswordNumber);
+                            parsedResponse.deviceId,
+                            parsedResponse.deviceType,
+                            response.getKey(),
+                            (parsedResponse.currentPasswordNumber == 0),
+                            (parsedResponse.currentPasswordNumber == 0 ? "01234567890123456789012345678901" : ""),
+                            parsedResponse.currentPasswordNumber);
                     System.out.println("Found device: " + dev.toString());
 
                     if (dev.isDefaultPasswordSet) {
@@ -197,10 +197,10 @@ public class Scp {
     }
 
     void doProvisioning(ScpDevice device, String ssid, String wifiPassword, String jsonPath) {
-        if (ssid == null ||
-                ssid.isEmpty() ||
-                wifiPassword == null ||
-                wifiPassword.isEmpty()) {
+        if (ssid == null
+                || ssid.isEmpty()
+                || wifiPassword == null
+                || wifiPassword.isEmpty()) {
             System.out.println("provisioning without ssid or wifiPassword not possible.");
             return;
         }
