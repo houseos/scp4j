@@ -4,22 +4,22 @@
  * SPDX-License-Identifier: GPL-3.0-only
  * Copyright (C) 2020 Marcel Jaehn
  */
-
 package org.houseos.scp4j;
 
 import com.google.gson.Gson;
 import java.util.Base64;
 import java.util.List;
 
-class ScpResponseDiscover {
-    static final String type = "discover-response";
+final class ScpResponseDiscover {
+
+    static final String TYPE = "discover-response";
     String deviceId;
     String deviceType;
     int currentPasswordNumber;
     String hmac;
 
-    ScpResponseDiscover(String deviceId, String deviceType,
-            int currentPasswordNumber, String hmac) {
+    private ScpResponseDiscover(String deviceId, String deviceType, int currentPasswordNumber,
+            final String hmac) {
         this.deviceId = deviceId;
         this.deviceType = deviceType;
         this.currentPasswordNumber = currentPasswordNumber;
@@ -33,15 +33,16 @@ class ScpResponseDiscover {
 
         String password = null;
         if (devices != null) {
-            ScpDevice scpDevice = devices.stream().filter(element -> element.deviceId.equals(discoverResponse.deviceId)).findFirst().orElse(null);
+            ScpDevice scpDevice = devices.stream().filter(element -> element.getDeviceId()
+                    .equals(discoverResponse.deviceId)).findFirst().orElse(null);
             if (scpDevice != null) {
                 password = scpDevice.knownPassword;
             }
         }
 
         // Check hmac before additional processing
-        if (new ScpCrypto().verifyHMAC(
-                ScpResponseDiscover.type + discoverResponse.deviceId + discoverResponse.deviceType + discoverResponse.currentPasswordNumber,
+        if (new ScpCrypto().verifyHMAC(ScpResponseDiscover.TYPE + discoverResponse.deviceId
+                + discoverResponse.deviceType + discoverResponse.currentPasswordNumber,
                 discoverResponse.hmac,
                 password)) {
             return discoverResponse;
@@ -50,12 +51,13 @@ class ScpResponseDiscover {
     }
 }
 
-class ScpResponseFetchNvcn {
-    static final String type = "security-fetch-nvcn";
+final class ScpResponseFetchNvcn {
+
+    static final String TYPE = "security-fetch-nvcn";
     String deviceId;
     String nvcn;
 
-    ScpResponseFetchNvcn(String deviceId, String nvcn) {
+    private ScpResponseFetchNvcn(String deviceId, String nvcn) {
         this.deviceId = deviceId;
         this.nvcn = nvcn;
     }
@@ -64,10 +66,10 @@ class ScpResponseFetchNvcn {
         Gson g = new Gson();
         ScpResponseFetchNvcn nvcnResponse = g.fromJson(json, ScpResponseFetchNvcn.class);
 
-        if (nvcnResponse.deviceId == null ||
-                nvcnResponse.deviceId.isEmpty() ||
-                nvcnResponse.nvcn == null ||
-                nvcnResponse.nvcn.isEmpty()) {
+        if (nvcnResponse.deviceId == null
+                || nvcnResponse.deviceId.isEmpty()
+                || nvcnResponse.nvcn == null
+                || nvcnResponse.nvcn.isEmpty()) {
             return null;
         }
 
@@ -75,14 +77,15 @@ class ScpResponseFetchNvcn {
     }
 }
 
-class ScpResponseSetPassword {
+final class ScpResponseSetPassword {
+
     static final String EXPECTED_TYPE = "security-pw-change";
     String type;
     String deviceId;
     String currentPasswordNumber;
     String result;
 
-    ScpResponseSetPassword(String deviceId, String currentPasswordNumber, String result) {
+    private ScpResponseSetPassword(String deviceId, String currentPasswordNumber, String result) {
         this.deviceId = deviceId;
         this.currentPasswordNumber = currentPasswordNumber;
         this.result = result;
@@ -91,10 +94,10 @@ class ScpResponseSetPassword {
     static ScpResponseSetPassword fromJson(String inputJson, String password) {
         Gson g = new Gson();
         WrappedScpResponse wrappedScpResponse = g.fromJson(inputJson, WrappedScpResponse.class);
-        if (wrappedScpResponse.response == null ||
-                wrappedScpResponse.response.isEmpty() ||
-                wrappedScpResponse.hmac == null ||
-                wrappedScpResponse.hmac.isEmpty()) {
+        if (wrappedScpResponse.response == null
+                || wrappedScpResponse.response.isEmpty()
+                || wrappedScpResponse.hmac == null
+                || wrappedScpResponse.hmac.isEmpty()) {
             return null;
         }
         String response = wrappedScpResponse.response;
@@ -113,13 +116,14 @@ class ScpResponseSetPassword {
     }
 }
 
-class ScpResponseSetWifiConfig {
+final class ScpResponseSetWifiConfig {
+
     static final String EXPECTED_TYPE = "security-wifi-config";
     String type;
     String deviceId;
     String result;
 
-    ScpResponseSetWifiConfig(String deviceId, String result) {
+    private ScpResponseSetWifiConfig(String deviceId, String result) {
         this.deviceId = deviceId;
         this.result = result;
     }
@@ -127,10 +131,10 @@ class ScpResponseSetWifiConfig {
     static ScpResponseSetWifiConfig fromJson(String inputJson, String password) {
         Gson g = new Gson();
         WrappedScpResponse wrappedScpResponse = g.fromJson(inputJson, WrappedScpResponse.class);
-        if (wrappedScpResponse.response == null ||
-                wrappedScpResponse.response.isEmpty() ||
-                wrappedScpResponse.hmac == null ||
-                wrappedScpResponse.hmac.isEmpty()) {
+        if (wrappedScpResponse.response == null
+                || wrappedScpResponse.response.isEmpty()
+                || wrappedScpResponse.hmac == null
+                || wrappedScpResponse.hmac.isEmpty()) {
             return null;
         }
         String response = wrappedScpResponse.response;
@@ -149,13 +153,14 @@ class ScpResponseSetWifiConfig {
     }
 }
 
-class ScpResponseRestart {
+final class ScpResponseRestart {
+
     static final String EXPECTED_TYPE = "security-restart";
     String type;
     String deviceId;
     String result;
 
-    ScpResponseRestart(String deviceId, String result) {
+    private ScpResponseRestart(String deviceId, String result) {
         this.deviceId = deviceId;
         this.result = result;
     }
@@ -163,10 +168,10 @@ class ScpResponseRestart {
     static ScpResponseRestart fromJson(String inputJson, String password) {
         Gson g = new Gson();
         WrappedScpResponse wrappedScpResponse = g.fromJson(inputJson, WrappedScpResponse.class);
-        if (wrappedScpResponse.response == null ||
-                wrappedScpResponse.response.isEmpty() ||
-                wrappedScpResponse.hmac == null ||
-                wrappedScpResponse.hmac.isEmpty()) {
+        if (wrappedScpResponse.response == null
+                || wrappedScpResponse.response.isEmpty()
+                || wrappedScpResponse.hmac == null
+                || wrappedScpResponse.hmac.isEmpty()) {
             return null;
         }
         String response = wrappedScpResponse.response;
@@ -185,13 +190,14 @@ class ScpResponseRestart {
     }
 }
 
-class ScpResponseResetToDefault {
+final class ScpResponseResetToDefault {
+
     static final String EXPECTED_TYPE = "security-reset-to-default";
     String type;
     String deviceId;
     String result;
 
-    ScpResponseResetToDefault(String deviceId, String result) {
+    private ScpResponseResetToDefault(String deviceId, String result) {
         this.deviceId = deviceId;
         this.result = result;
     }
@@ -199,10 +205,10 @@ class ScpResponseResetToDefault {
     static ScpResponseResetToDefault fromJson(String inputJson, String password) {
         Gson g = new Gson();
         WrappedScpResponse wrappedScpResponse = g.fromJson(inputJson, WrappedScpResponse.class);
-        if (wrappedScpResponse.response == null ||
-                wrappedScpResponse.response.isEmpty() ||
-                wrappedScpResponse.hmac == null ||
-                wrappedScpResponse.hmac.isEmpty()) {
+        if (wrappedScpResponse.response == null
+                || wrappedScpResponse.response.isEmpty()
+                || wrappedScpResponse.hmac == null
+                || wrappedScpResponse.hmac.isEmpty()) {
             return null;
         }
         String response = wrappedScpResponse.response;
@@ -221,14 +227,15 @@ class ScpResponseResetToDefault {
     }
 }
 
-class ScpResponseControl {
+final class ScpResponseControl {
+
     static final String EXPECTED_TYPE = "control";
     String type;
     String action;
     String deviceId;
     String result;
 
-    ScpResponseControl(String action, String deviceId, String result) {
+    private ScpResponseControl(String action, String deviceId, String result) {
         this.action = action;
         this.deviceId = deviceId;
         this.result = result;
@@ -238,10 +245,10 @@ class ScpResponseControl {
         Gson g = new Gson();
         WrappedScpResponse wrappedScpResponse = g.fromJson(inputJson, WrappedScpResponse.class);
 
-        if (wrappedScpResponse.response == null ||
-                wrappedScpResponse.response.isEmpty() ||
-                wrappedScpResponse.hmac == null ||
-                wrappedScpResponse.hmac.isEmpty()) {
+        if (wrappedScpResponse.response == null
+                || wrappedScpResponse.response.isEmpty()
+                || wrappedScpResponse.hmac == null
+                || wrappedScpResponse.hmac.isEmpty()) {
             return null;
         }
         String response = wrappedScpResponse.response;
@@ -261,15 +268,21 @@ class ScpResponseControl {
 }
 
 class WrappedScpResponse {
+
     String response;
     String hmac;
 }
 
-public class ScpResponseParser {
+public final class ScpResponseParser {
+
+    private ScpResponseParser() {
+        // this class has only static methods
+    }
+
     static ScpResponseDiscover parseDiscoverResponse(String response, List<ScpDevice> devices) {
         return ScpResponseDiscover.fromJson(response, devices);
     }
-    
+
     static ScpResponseFetchNvcn parseNvcnResponse(String response) {
         return ScpResponseFetchNvcn.fromJson(response);
     }
