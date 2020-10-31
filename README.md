@@ -17,7 +17,7 @@ Run the program with:
 
 ## CLI Client
 
-```
+``` lang-none
 Usage: scp4j [-h] [COMMAND]
 Secure Control Protocol CLI Client
   -h, --help   Print this usage information.
@@ -32,7 +32,7 @@ Commands:
 ### control
 
 `java -jar target/scp4j-0.0.1-SNAPSHOT-jar-with-dependencies.jar control`
-```
+``` lang-none
 Usage: scp4j control [-h] -c=<command> -d=<deviceId> -j=<jsonPath>
 Control the selected device.
   -c, --command=<command>   The command to send to the device.
@@ -44,7 +44,7 @@ Control the selected device.
 ### discover
 
 `java -jar target/scp4j-0.0.1-SNAPSHOT-jar-with-dependencies.jar discover`
-```
+``` lang-none
 Usage: scp4j discover [-h] -i=<ipAddress> -m=<mask>
 Discover all devices in a given IP range.
   -h, --help          Print this usage information.
@@ -56,7 +56,7 @@ Discover all devices in a given IP range.
 ### provision
 
 `java -jar target/scp4j-0.0.1-SNAPSHOT-jar-with-dependencies.jar provision`
-```
+``` lang-none
 Usage: scp4j provision [-h] -i=<ipAddress> -j=<jsonPath> -m=<mask>
                        -p=<password> -s=<ssid>
 Provision all available devices.
@@ -74,7 +74,7 @@ Provision all available devices.
 ### reset
 
 `java -jar target/scp4j-0.0.1-SNAPSHOT-jar-with-dependencies.jar reset`
-```
+``` lang-none
 Usage: scp4j reset [-h] -d=<deviceId> -j=<jsonPath>
 Reset the selected device.
   -d, --deviceId=<deviceId>
@@ -86,7 +86,7 @@ Reset the selected device.
 ### update
 
 `java -jar target/scp4j-0.0.1-SNAPSHOT-jar-with-dependencies.jar update`
-```
+``` lang-none
 Usage: scp4j update [-h] -i=<ipAddress> -j=<jsonPath> -m=<mask>
 Update the IP addresses of all devices in a given IP range.
   -h, --help              Print this usage information.
